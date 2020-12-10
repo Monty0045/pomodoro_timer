@@ -30,7 +30,6 @@ run_command(
 sources = files(
   'config.rs',
   'main.rs',
-  'window.rs',
 )
 
 cargo_script = find_program(join_paths(meson.source_root(), 'build-aux/cargo.sh'))
