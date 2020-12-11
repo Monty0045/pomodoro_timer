@@ -3,6 +3,7 @@ use gio::prelude::*;
 use gtk::prelude::*;
 use std::sync::mpsc;
 use std::thread;
+use std::sync::{Arc, Mutex};
 
 mod config;
 //mod window;
@@ -80,11 +81,15 @@ fn createListeners(play_button : &gtk::Button, reset_button : &gtk::Button)
 
     thread::spawn(move || {
 
-        let mut counter = timer::Timer::new();
+        let mut counter = Arc::new(Mutex::new(timer::Timer::new()));
+        //counter.initiateTimer();
+        timer::timerStart(counter.clone());
 
         for message in receiver {
 
-            counter.messageSent(message);
+            let mut timer_copy = counter.lock().unwrap();
+
+            timer_copy.messageSent(message);
             //println!("This happens {}", message);
 
         }
