@@ -68,6 +68,7 @@ fn buildUI(application: &gtk::Application)
     window.present();
 }
 
+
 fn createListeners(play_button : &gtk::Button,
                   reset_button : &gtk::Button,
                   description : &gtk::Label,
@@ -76,10 +77,10 @@ fn createListeners(play_button : &gtk::Button,
     let (messenger, receiver) = mpsc::channel();   //Will send messages to timer when play, reset
 
     let messenger_clone = mpsc::Sender::clone(&messenger);
-    //let play_clone = play_button.clone();
+    let play_clone = Mutex::new(play_button.clone());
     //let reset_clone = reset_button.clone();
-    //let descr_clone = description.clone();
-    //let countdown_clone = countdown.clone();
+    let descr_clone = description.clone();
+    let countdown_clone = countdown.clone();
 
 
     play_button.connect_clicked(move |_| {
@@ -92,13 +93,29 @@ fn createListeners(play_button : &gtk::Button,
         messenger.send("reset");
     });
 
+    let (sender_label, receiver_label) = glib::MainContext::channel::
+        <std::string::String>(glib::PRIORITY_DEFAULT);
+
+    receiver_label.attach(None, move |msg| {
+        /*
+        match msg {
+            Message::UpdateLabel(text) => descr_clone.set_text(text.as_str()),
+        }
+        */
+        println!("{}", msg);
+        countdown_clone.set_label(msg.as_str());
+        glib::Continue(true)
+    });
+
     thread::spawn(move || {
 
         let mut counter = Arc::new(Mutex::new(timer::Timer::new()));
 
+        //play_clone.lock().unwrap();
+
         //timerListener(counter.clone(), &descr_clone, &countdown_clone);
 
-        timerListener(counter.clone());
+        timerListener(counter.clone(), sender_label);
 
         //message is event from user clicking a button
         for message in receiver {
@@ -106,6 +123,11 @@ fn createListeners(play_button : &gtk::Button,
             //play_clone.set_label(message);
 
             let mut timer_copy = counter.lock().unwrap();
+
+            /*
+            let mut playmaybe = play_clone.lock().unwrap();
+            playmaybe.set_label("Yo");
+            */
 
             timer_copy.messageSent(message);
 
@@ -120,7 +142,7 @@ fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>,
                 desription : &gtk::Label,
                 countdown : &gtk::Label)
                 */
-fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>)
+fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>, sender : glib::Sender<String>)
 {
     let (messenger, receiver) = mpsc::channel::<std::string::String>();     //Message is a String type as a hackish way to get around lifetime issues with using &str
 
@@ -131,6 +153,7 @@ fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>)
         for message in receiver
         {
             println!("Message from timer {}", message);
+            sender.send(message);
         }
 
     });
