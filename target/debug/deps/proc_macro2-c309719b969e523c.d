@@ -1,0 +1,12 @@
+/home/monty/Projects/pomodoro_timer/target/debug/deps/proc_macro2-c309719b969e523c.rmeta: /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/lib.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/marker.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/parse.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/detection.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/fallback.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/wrapper.rs
+
+/home/monty/Projects/pomodoro_timer/target/debug/deps/libproc_macro2-c309719b969e523c.rlib: /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/lib.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/marker.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/parse.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/detection.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/fallback.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/wrapper.rs
+
+/home/monty/Projects/pomodoro_timer/target/debug/deps/proc_macro2-c309719b969e523c.d: /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/lib.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/marker.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/parse.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/detection.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/fallback.rs /home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/wrapper.rs
+
+/home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/lib.rs:
+/home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/marker.rs:
+/home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/parse.rs:
+/home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/detection.rs:
+/home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/fallback.rs:
+/home/monty/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.24/src/wrapper.rs:
