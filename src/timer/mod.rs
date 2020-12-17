@@ -58,7 +58,7 @@ impl Timer
 
 //Experimental function, pass in ARC of Timer class to initiate things
 //pub fn timerStart(timer : Arc<Mutex<Timer>>, messenger: mpsc::Sender<&str>) -> mpsc::Receiver<&str>
-pub fn timerStart(timer : Arc<Mutex<Timer>>, messenger: mpsc::Sender<std::string::String>)
+pub fn timerStart(timer : Arc<Mutex<Timer>>, messenger: glib::Sender<std::string::String>)
 {
     //let (messenger, receiver) = mpsc::channel();
 
@@ -67,7 +67,7 @@ pub fn timerStart(timer : Arc<Mutex<Timer>>, messenger: mpsc::Sender<std::string
     //return receiver;
 }
 
-fn countDown(timer : Arc<Mutex<Timer>>, messenger: mpsc::Sender<std::string::String>)
+fn countDown(timer : Arc<Mutex<Timer>>, messenger: glib::Sender<std::string::String>)
 {
     thread::spawn(move || {
 
@@ -82,8 +82,6 @@ fn countDown(timer : Arc<Mutex<Timer>>, messenger: mpsc::Sender<std::string::Str
                 println!("Is counting.. {}", timer_copy.count);
                 messenger.send(timer_copy.count.to_string());
             }
-
-            println!("Timer ran");
 
             }
 

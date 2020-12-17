@@ -60,6 +60,7 @@ fn buildUI(application: &gtk::Application)
         .get_object("reset_button")
         .expect("Failed to get resetButton");
 
+
     createListeners(&play_button, &reset_button, &description, &countdown);
 
 
@@ -68,7 +69,7 @@ fn buildUI(application: &gtk::Application)
     window.present();
 }
 
-
+//Creates instance of a timer object as well as connect GUI objects to events and listens to timer
 fn createListeners(play_button : &gtk::Button,
                   reset_button : &gtk::Button,
                   description : &gtk::Label,
@@ -83,79 +84,56 @@ fn createListeners(play_button : &gtk::Button,
     let countdown_clone = countdown.clone();
 
 
+    //play/pause button clicked
     play_button.connect_clicked(move |_| {
 
         messenger_clone.send("play");
     });
 
-
+    //reset button clicked
     reset_button.connect_clicked(move |_| {
         messenger.send("reset");
     });
 
-    let (sender_label, receiver_label) = glib::MainContext::channel::
-        <std::string::String>(glib::PRIORITY_DEFAULT);
 
-    receiver_label.attach(None, move |msg| {
-        /*
-        match msg {
-            Message::UpdateLabel(text) => descr_clone.set_text(text.as_str()),
-        }
-        */
-        println!("{}", msg);
-        countdown_clone.set_label(msg.as_str());
-        glib::Continue(true)
-    });
+    let mut counter = Arc::new(Mutex::new(timer::Timer::new()));    //timer 'object'
 
+    timerListener(counter.clone(), countdown_clone);    //handles listening for events from timer
+
+
+    //Thread sends GUI click events to timer.
     thread::spawn(move || {
-
-        let mut counter = Arc::new(Mutex::new(timer::Timer::new()));
-
-        //play_clone.lock().unwrap();
-
-        //timerListener(counter.clone(), &descr_clone, &countdown_clone);
-
-        timerListener(counter.clone(), sender_label);
 
         //message is event from user clicking a button
         for message in receiver {
 
-            //play_clone.set_label(message);
-
             let mut timer_copy = counter.lock().unwrap();
 
-            /*
-            let mut playmaybe = play_clone.lock().unwrap();
-            playmaybe.set_label("Yo");
-            */
-
-            timer_copy.messageSent(message);
+            timer_copy.messageSent(message);    //Sends whether the user selected 'play' or 'reset'
 
         }
 
     });
 }
 
-//fn timerListener(timer : Arc<Mutex<Timer>>, timerEvents : mpsc::Receiver<&str>)
-/*
+
+
 fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>,
-                desription : &gtk::Label,
-                countdown : &gtk::Label)
-                */
-fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>, sender : glib::Sender<String>)
+    countdown_clone : gtk::Label
+)
 {
-    let (messenger, receiver) = mpsc::channel::<std::string::String>();     //Message is a String type as a hackish way to get around lifetime issues with using &str
+    let (sender, receiver) = glib::MainContext::channel::
+        <std::string::String>(glib::PRIORITY_DEFAULT);
 
-    let timerEvents = timer::timerStart(clock_timer, messenger);
 
-    thread::spawn(move || {
+    timer::timerStart(clock_timer, sender);
 
-        for message in receiver
-        {
-            println!("Message from timer {}", message);
-            sender.send(message);
-        }
 
+    //receives value to update GUI
+    receiver.attach(None, move |msg| {
+        countdown_clone.set_label(msg.as_str());
+        glib::Continue(true)
     });
 
 }
+
