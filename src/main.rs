@@ -78,7 +78,7 @@ fn createListeners(play_button : &gtk::Button,
     let (messenger, receiver) = mpsc::channel();   //Will send messages to timer when play, reset
 
     let messenger_clone = mpsc::Sender::clone(&messenger);
-    let play_clone = Mutex::new(play_button.clone());
+    let play_clone = play_button.clone();
     //let reset_clone = reset_button.clone();
     let descr_clone = description.clone();
     let countdown_clone = countdown.clone();
@@ -86,20 +86,31 @@ fn createListeners(play_button : &gtk::Button,
 
     //play/pause button clicked
     play_button.connect_clicked(move |_| {
-
         messenger_clone.send("play");
+
+        if(play_clone.get_label().unwrap() == "play")
+        {
+            play_clone.set_label("pause");
+        }
+        else
+        {
+            play_clone.set_label("play");
+        }
     });
 
+    let play_clone = play_button.clone();
     //reset button clicked
     reset_button.connect_clicked(move |_| {
         messenger.send("reset");
+        play_clone.set_label("play");
+        countdown_clone.set_label("25:00");
     });
 
 
     let mut counter = Arc::new(Mutex::new(timer::Timer::new()));    //timer 'object'
 
-    timerListener(counter.clone(), countdown_clone);    //handles listening for events from timer
-
+    let countdown_clone = countdown.clone();
+    timerListener(counter.clone(), countdown_clone, descr_clone);    //handles listening for events from timer
 
     //Thread sends GUI click events to timer.
     thread::spawn(move || {
@@ -117,21 +128,23 @@ fn createListeners(play_button : &gtk::Button,
 }
 
 
-
+//Listens for events (new coutdown value/whether it is work time or break) and updates GUI
 fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>,
-    countdown_clone : gtk::Label
+    countdown_clone : gtk::Label,
+    desc_clone : gtk::Label
 )
 {
     let (sender, receiver) = glib::MainContext::channel::
-        <std::string::String>(glib::PRIORITY_DEFAULT);
+        <(i32, std::string::String)>(glib::PRIORITY_DEFAULT);
 
 
     timer::timerStart(clock_timer, sender);
 
-
     //receives value to update GUI
     receiver.attach(None, move |msg| {
-        countdown_clone.set_label(msg.as_str());
+        let time_string = msg.0.to_string();
+        countdown_clone.set_label(time_string.as_str());
+        desc_clone.set_label(msg.1.as_str());
         glib::Continue(true)
     });
 
