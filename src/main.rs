@@ -26,6 +26,7 @@ fn main() {
     let app = gtk::Application::new(Some("org.example.App"), Default::default()).unwrap();
     app.connect_activate(move |app| {
         buildUI(&app);
+        //let gio::ApplicationExt::activate();
         //timer::testing();
     });
 
@@ -79,7 +80,6 @@ fn createListeners(play_button : &gtk::Button,
 
     let messenger_clone = mpsc::Sender::clone(&messenger);
     let play_clone = play_button.clone();
-    //let reset_clone = reset_button.clone();
     let descr_clone = description.clone();
     let countdown_clone = countdown.clone();
 
@@ -88,13 +88,13 @@ fn createListeners(play_button : &gtk::Button,
     play_button.connect_clicked(move |_| {
         messenger_clone.send("play");
 
-        if(play_clone.get_label().unwrap() == "play")
+        if(play_clone.get_label().unwrap() == "Play")
         {
-            play_clone.set_label("pause");
+            play_clone.set_label("Pause");
         }
         else
         {
-            play_clone.set_label("play");
+            play_clone.set_label("Play");
         }
     });
 
@@ -102,7 +102,7 @@ fn createListeners(play_button : &gtk::Button,
     //reset button clicked
     reset_button.connect_clicked(move |_| {
         messenger.send("reset");
-        play_clone.set_label("play");
+        play_clone.set_label("Play");
         countdown_clone.set_label("25:00");
     });
 
@@ -142,7 +142,7 @@ fn timerListener(clock_timer : Arc<Mutex<timer::Timer>>,
 
     //receives value to update GUI
     receiver.attach(None, move |msg| {
-        let time_string = msg.0.to_string();
+        let time_string = msg.0.to_string();    //TODO : Format this time (in seconds currently) to digital time format (ex 25:00)
         countdown_clone.set_label(time_string.as_str());
         desc_clone.set_label(msg.1.as_str());
         glib::Continue(true)

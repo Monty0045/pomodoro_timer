@@ -85,20 +85,29 @@ fn countdown_cases(mut timer : std::sync::MutexGuard<Timer>) -> (i32, std::strin
 
     if(timer.count < 0)
     {
+
+        //let notification = gio::Notification::new("");  //Notifies user to work/break
+
         if(timer.isBreak)   //was on break, now switching back to work
         {
             timer.isBreak = false;
-            timer.count = 10;       //to-do : swap this out for 25 mins
+            timer.count = 10;       //TODO : swap this out for 25 mins
+            //notification.set_title("Time to work!");
         }
         else {
-
             if(timer.sprintCount % 3 == 0) //after 4 sprints have occured
             {
-                timer.count = 10;  //to-do : swap this out for 25 mins
+                timer.count = 10;  //TODO : swap this out for 25 mins
             }
             else {
-                timer.count = 5;
+                timer.count = 5; //TODO: Swap this out for 5 mins
             }
+            //notification.set_title("Time to take a break!");
+            //let notifier = gio::ApplicationExt::activate();
+            //gio::ApplicationExt::send_notification(notification, "Timer event", notification);
+
+            //TODO : Emit a system notification so user is alerted to change in tasks
+
             timer.sprintCount+=1;
             timer.isBreak = true;
         }
